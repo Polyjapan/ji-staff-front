@@ -21,6 +21,10 @@ export class ViewApplicationComponent implements OnInit {
     this.route.url.subscribe(url => {
         this.forms.getEdition().then(edition => {
           this.edition = edition;
+
+          if (edition === null) {
+            this.error = "Aucun recrutement ouvert pour le moment.";
+          }
         }, err => {
           if (err instanceof Response) {
             this.error = (err as Response).json()["messages"].join("<br/>");

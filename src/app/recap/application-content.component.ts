@@ -34,9 +34,8 @@ export class ApplicationContentComponent {
     const month = +data[2];
     const year = +data[3] + 18;
 
-    const majority = new Date(year, month, day, 0, 0, 0);
-    console.log(majority.getDate());
-    return majority.getDate() > this.edition.edition.conventionStart;
+    const majority = new Date(year, month - 1, day, 0, 0, 0);
+    return majority.getTime() > this.edition.edition.conventionStart;
   }
 
 }

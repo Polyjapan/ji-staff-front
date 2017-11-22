@@ -1,5 +1,5 @@
 <div class="jumbotron">
-  <h1>Bienvenue, {{auth.getToken().given_name}}</h1>
+  <h1>Bienvenue{{auth.getToken().given_name ? ", " + auth.getToken().given_name : ""}}</h1>
   <p>Sur cet extranet tu peux déposer ta candidature pour rejoindre le staff Japan Impact.</p>
   <a class="btn btn-lg btn-success" routerLink="/apply" role="button">Ma candidature &raquo;</a>
 </div>
