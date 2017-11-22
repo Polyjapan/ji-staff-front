@@ -1,0 +1,28 @@
+
+<div *ngIf="error">
+  <div class="alert alert-danger" role="alert">
+    <b>Une erreur s'est produite : </b>
+    <p [innerHtml]="error"></p>
+  </div>
+</div>
+
+<div *ngIf="edition && !loading">
+  <div class="well">
+    <h1>Candidature JI {{edition.edition.year}}</h1>
+    <h2>Page {{currentPage.pageNumber + 1}}/{{edition.totalPages()}} : {{currentPage.title}}</h2>
+  </div>
+  <div class="well" *ngIf="form">
+    <form (ngSubmit)="onSubmit()" [formGroup]="form">
+      <div *ngFor="let field of fields" class="form-group">
+        <app-form-field [field]="field" [form]="form"></app-form-field>
+      </div>
+
+        <button type="submit" [disabled]="!form.valid" class="btn btn-success">Continuer</button>
+    </form>
+  </div>
+</div>
+<div *ngIf="!error && loading">
+  <div class="well">
+    <h2>Chargement des données en cours...</h2><br/>
+  </div>
+</div>

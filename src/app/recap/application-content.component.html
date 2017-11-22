@@ -1,0 +1,6 @@
+<div class="well" *ngFor="let page of pages">
+  <h2>{{page.title}}</h2>
+  <ul>
+    <li *ngFor="let f of page.fields"><b>{{f.label}}</b> : {{getValue(f.key)}}</li>
+  </ul>
+</div>

@@ -1,0 +1,20 @@
+
+<div *ngIf="error">
+  <div class="alert alert-danger" role="alert">
+    <b>Une erreur s'est produite : </b>
+    <p [innerHtml]="error"></p>
+  </div>
+</div>
+
+<div *ngIf="edition && !loading">
+  <div class="jumbotron">
+    <h1>Candidature JI {{edition.edition.year}}</h1>
+    <p>Ta candidature est actuellement <b class="label {{stateLabel}}">{{stateContent}}</b> </p>
+  </div>
+  <app-application-content [edition]="edition" [application]="application"></app-application-content>
+</div>
+<div *ngIf="!error && loading">
+  <div class="well">
+    <h2>Chargement des données en cours...</h2><br/>
+  </div>
+</div>

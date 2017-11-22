@@ -1,0 +1,42 @@
+
+<div *ngIf="error">
+  <div class="alert alert-danger" role="alert">
+    <b>Une erreur s'est produite : </b>
+    <p [innerHtml]="error"></p>
+  </div>
+</div>
+
+<div *ngIf="edition && !loading">
+  <div class="jumbotron">
+    <h1>Candidature JI {{edition.edition.year}}</h1>
+    <p>C'est presque terminé ! Avant d'envoyer ta candidature, vérifie ici qu'elle est bien correcte.</p>
+    <p><b>Attention ! </b>Une fois que ta candidature a été envoyée, tu ne peux plus la modifier.</p>
+  </div>
+  <app-application-content [edition]="edition" [application]="application"></app-application-content>
+  <div class="well">
+    <h2>Validation</h2>
+    <p><b>Conditions générales pour être staff :</b></p>
+    <p>Eh oui, être staff c'est avoir droit à pas mal de choses dont:<br>-L'entrée gratuite dans la convention.<br>-Deux entrées dimanche gratuites à offrir aux personnes de ton choix.<br>-Le T-shirt officiel de staff Japan-Impact.<br>-Les repas offerts durant la convention.<br>-Un espace où stocker ses affaires et se reposer.<br>-La possibilité de dormir sur place.<br>-Une soirée de remerciement aux staffs tenue plus tard dans l'année<br>-La possibilité de découvrir une convention de l'intérieur et possiblement d'acquérir quelques connaissances intéressantes.<br>-Au moins une moitié de la journée en temps libre voire plus (dépendant du nombre de staffs) durant la convention pour en profiter.<br><br>Les conditions obligatoires pour être staff sont les suivantes:<br>-Être présent sur les lieux de la convention à partir de 08:00 jusqu'à 22:00 durant le week-end de déroulement les 17 et 18 février.<br>-Être présent le vendredi 16 février pour l'installation dès 17:00<br>-Être présent à l'une des journées de formation staffs<br>-Fournir une autorisation signée de son représentant légal si mineur.<br><br>Si tu es motivé à nous aider, tu peux aussi nous prêter assistance pour certaines tâches dont:<br>-Faire de la pub et de l'affichage pour Japan Impact.<br>-Essayer de recruter des staffs supplémentaires parmi tes amis.<br>-Participer aux séances de préparation de décorations.<br>-Aider au montage durant la semaine précédant Japan Impact</p>
+
+    <br/>
+    <form (ngSubmit)="onSubmit()" [formGroup]="form">
+      <div class="checkbox">
+        <label>
+          <input type="checkbox" [formControlName]="'conditions'">
+          <b>J'ai lu et approuvé les conditions</b>
+        </label>
+      </div>
+
+      <hr>
+
+      <button type="submit" class="btn btn-success" [disabled]="!form.valid">C'est tout bon, valider ma candidature</button>
+      <button (click)="onGoBack()" class="btn btn-warning">Oups je me suis trompé, modifier</button>
+
+    </form>
+  </div>
+</div>
+<div *ngIf="!error && loading">
+  <div class="well">
+    <h2>Chargement des données en cours...</h2><br/>
+  </div>
+</div>

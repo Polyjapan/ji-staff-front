@@ -3,7 +3,6 @@ import { AUTH_CONFIG } from './auth0-variables';
 import { Router } from '@angular/router';
 import * as auth0 from 'auth0-js';
 import 'rxjs/add/operator/toPromise';
-import {Location} from '@angular/common';
 import {JwtHelper} from "angular2-jwt";
 
 
@@ -37,11 +36,12 @@ export class AuthService {
       if (authResult && authResult.idToken) {
         window.location.hash = '';
         this.setSession(authResult);
+        this.router.navigate(['/']);
       } else if (err) {
         console.log(err);
         alert(`Authentication error: ${err.error}`);
+        this.router.navigate(['/']);
       }
-      this.router.navigate(['/']);
     });
   }
 

@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  apiurl: "https://staff.japan-impact.ch/api"
 };

@@ -1,0 +1,51 @@
+<!--<div [formGroup]="form">
+  <label [attr.for]="field.key">{{field.label}}</label>
+
+  <!--<div [ngSwitch]="question.controlType">
+
+    <input *ngSwitchCase="'textbox'" [formControlName]="question.key"
+           [id]="question.key" [type]="question.type">
+
+    <select [id]="question.key" *ngSwitchCase="'dropdown'" [formControlName]="question.key">
+      <option *ngFor="let opt of question.options" [value]="opt.key">{{opt.value}}</option>
+    </select>
+
+  </div><--
+
+  <input [formControlName]="field.key" [id]="field.key">
+
+  <div class="errorMessage" *ngIf="!isValid">{{field.label}} is required</div>
+</div>-->
+
+<div [formGroup]="form">
+  <label [attr.for]="field.key">{{field.required ? "*" : ""}} {{field.label}}</label>
+  <p *ngIf="field.helpText && field.helpText !== ''" [innerHtml]="field.helpText | replacenl"></p>
+
+  <div [ngSwitch]="field.controlType">
+    <input *ngSwitchCase="'text'" type="text" class="form-control" [id]="field.key" [placeholder]="field.label" [formControlName]="field.key">
+    <input *ngSwitchCase="'email'" type="email" class="form-control" [id]="field.key" [placeholder]="field.label" [formControlName]="field.key">
+    <input *ngSwitchCase="'number'" type="number" class="form-control" [id]="field.key" [placeholder]="field.label" [formControlName]="field.key">
+    <select [id]="field.key" *ngSwitchCase="'select'" [formControlName]="field.key" class="form-control" >
+      <option *ngFor="let opt of field.additionalData['values']" [value]="opt">{{opt}}</option>
+    </select>
+    <div class="checkbox" *ngSwitchCase="'checkbox'">
+      <label>
+        <input type="checkbox" [formControlName]="field.key">
+        {{field.label}}
+      </label>
+    </div>
+    <div *ngSwitchCase="'option'">
+      <div class="radio"  *ngFor="let opt of field.additionalData['values']">
+        <label>
+          <input type="radio" [formControlName]="field.key" [id]="field.key + opt" [value]="opt">
+          {{opt}}
+        </label>
+      </div>
+    </div>
+
+
+    <textarea *ngSwitchCase="'textarea'" class="form-control" [id]="field.key" [placeholder]="field.label" [formControlName]="field.key"></textarea>
+    <p *ngSwitchDefault><b>ERROR: unknown field type {{field.controlType}}</b></p>
+  </div>
+
+</div>

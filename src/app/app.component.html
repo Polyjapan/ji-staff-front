@@ -11,8 +11,7 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li><a routerLink="profile">Mon profil</a></li>
-        <li><a routerLink="application">Mes candidatures</a></li>
+        <li><a routerLink="apply">Ma candidature</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right" *ngIf="auth.isAuthenticated()">
         <li><a class="btn" (click)="auth.logout()"><b class="glyphicon glyphicon-off"></b> Déconnexion</a></li>
