@@ -4,58 +4,29 @@ import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {FormService, LoadedForm} from "../services/form.service";
 import {Response} from "@angular/http";
+import {AbstractEditionComponent} from "../form/abstract-edition-component";
 
 @Component({
   selector: 'app-form-recap',
   templateUrl: './form-recap.component.html'
 })
-export class FormRecapComponent implements OnInit {
-  edition: LoadedForm = null;
-  application: Application = null;
-  loading: boolean = true;
-  error: string = null;
+export class FormRecapComponent extends AbstractEditionComponent {
   form: FormGroup;
 
-  constructor(public forms: FormService, public backend: BackendService, private route: ActivatedRoute, public router: Router) {
+  constructor(forms: FormService, backend: BackendService, route: ActivatedRoute, public router: Router) {
+    super(forms, backend, route);
     this.form = new FormGroup({"conditions": new FormControl('', Validators.required)});
   }
 
-  ngOnInit(): void {
-    this.route.url.subscribe(url => {
-        this.forms.getEdition().then(edition => {
-          this.edition = edition;
+  completeInit(params: ParamMap): Promise<void> {
+    if (this.application === null) {
+      return Promise.reject("Aucune candidature en cours pour cette édition.");
+    } else if (this.application.isValidated) {
+      this.router.navigate(["/view", this.edition.edition.year]);
+      return Promise.reject("Candidature déjà envoyée, redirection...");
+    }
 
-          if (edition === null) {
-            this.error = "Aucun recrutement ouvert pour le moment.";
-          }
-        }, err => {
-          if (err instanceof Response) {
-            this.error = (err as Response).json()["messages"].join("<br/>");
-          } else {
-            console.log(err);
-            this.error = "Erreur inconnue";
-          }
-        })
-          .then(u => this.backend.getOwnApplication(this.edition.edition.year))
-          .then(app => {
-            this.application = app;
-            if (this.application.isValidated) {
-              this.router.navigate(["/view/"]);
-            }
-          }, err => {
-              if (err instanceof Response) {
-                this.error = (err as Response).json()["messages"].join("<br/>");
-              } else {
-                console.log(err);
-                this.error = "Erreur inconnue";
-              }
-            }
-          )
-          .then(u => {
-            this.loading = false;
-          });
-
-      });
+    return Promise.resolve(null);
   }
 
   onSubmit() {
@@ -64,7 +35,7 @@ export class FormRecapComponent implements OnInit {
 
     this.backend.validateApplication(this.edition.edition.year)
       .then(success => {
-        this.router.navigate(["/view/"]);
+        this.router.navigate(["/view", this.year]);
       })
       .catch(err => {
         console.log(err);
@@ -78,6 +49,6 @@ export class FormRecapComponent implements OnInit {
   }
 
   onGoBack() {
-    this.router.navigate(["/apply/"]);
+    this.router.navigate(["/apply/", this.year]);
   }
 }

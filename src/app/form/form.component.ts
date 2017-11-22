@@ -1,114 +1,78 @@
-import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
+import {Component} from '@angular/core';
 import {BackendService} from "../services/backend.service";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {FormGroup} from "@angular/forms";
-import {FormService, LoadedForm} from "../services/form.service";
+import {FormService} from "../services/form.service";
 import {Response} from "@angular/http";
+import {isMinor} from "../utils/isminor";
+import {AbstractEditionComponent} from "./abstract-edition-component";
 
 @Component({
   selector: 'app-form',
   templateUrl: './form.component.html'
 })
-export class FormComponent implements OnInit {
-  edition: LoadedForm = null;
-  application: Application = null;
-  loading: boolean = true;
-  error: string = null;
+export class FormComponent extends AbstractEditionComponent {
   page: number = 0;
   form: FormGroup;
 
-  constructor(public forms: FormService, public backend: BackendService, private route: ActivatedRoute, public router: Router) {
+  constructor(forms: FormService, backend: BackendService, route: ActivatedRoute, public router: Router) {
+    super(forms, backend, route);
   }
 
   loadPage(page: number) {
     this.form = this.edition.buildFormGroup(page, (this.application !== null) ? this.application.content : null);
   }
 
-  ngOnInit(): void {
-    this.route.paramMap
-      .subscribe((params: ParamMap) => {
-        this.form = null;
+  preInit(params: ParamMap): Promise<void> {
+    this.form = null;
 
-        if (params.has("page")) {
-          this.page = +params.get("page");
-        } else {
-          this.page = 0;
-        }
+    if (params.has("page")) {
+      this.page = +params.get("page");
+    } else {
+      this.page = 0;
+    }
 
-        let future = null;
-
-        if (this.edition != null) {
-          future = Promise.resolve(this.edition);
-        } else {
-          future = this.forms.getEdition();
-        }
-
-        future.then(edition => {
-          if (edition === null) {
-            this.error = "Aucun recrutement ouvert pour le moment.";
-          }
-          this.edition = edition;
-        }, err => {
-          if (err instanceof Response) {
-            this.error = (err as Response).json()["messages"].join("<br/>");
-          } else {
-            console.log(err);
-            this.error = "Erreur inconnue";
-          }
-        }).then(u => this.backend.getOwnApplication(this.edition.edition.year))
-          .then(app => {
-              this.application = app;
-              if (this.application.isValidated) {
-                this.router.navigate(["/view/"]);
-              }
-            }, err => {
-              console.log(err);
-              return;
-            }
-          ).then(u => this.loadPage(this.page))
-          .then(u => {
-            this.loading = false;
-          });
-
-      });
+    return Promise.resolve(null);
   }
 
-  get currentPage(): FormPage {
-    return this.edition.getPage(this.page);
-  }
+  completeInit(params: ParamMap): Promise<void> {
+    if (this.application != null && this.application.isValidated) {
+      this.router.navigate(["/view", this.edition.edition.year]);
+      return Promise.reject("Candidature déjà envoyée, redirection...");
+    }
 
-  get hasNextPage(): boolean {
-    return this.page < this.edition.totalPages() - 1;
-  }
+    if (this.page >= this.edition.totalPages()) {
+      this.edition = null;
+      return Promise.reject("Cette page n'existe pas");
+    }
 
-  get nextPage(): number {
-    return this.edition.edition.formData.filter(page => {
-      return page.pageNumber > this.page && (!page.minorOnly || this.isMinor())
-    }).sort((p1, p2) => p1.pageNumber - p2.pageNumber)[0].pageNumber;
-  }
-
-  get fields(): FormField[] {
-    return this.edition.getFields(this.page);
+    this.loadPage(this.page);
+    return Promise.resolve(null);
   }
 
   onSubmit() {
     const toSend = this.form.getRawValue();
 
+    // Remove empty fields
     Object.keys(toSend).forEach(key => {
       if (typeof toSend[key] === "string" && (toSend[key] as string).length === 0) {
         delete toSend[key];
       }
     });
 
+    // Reset component
     this.error = null;
     this.loading = true;
 
+    // Update application
     this.backend.updateApplication(this.edition.edition.year, this.page, toSend)
       .then(success => {
         if (this.hasNextPage) {
-          this.router.navigate(["/apply/", this.nextPage]);
+          // Continue the form
+          this.router.navigate(["/apply", this.year, this.nextPage]);
         } else {
-          this.router.navigate(["/apply/", "confirm"])
+          // Go to the confirmation
+          this.router.navigate(["/apply", this.year, "confirm"]);
         }
       })
       .catch(err => {
@@ -122,6 +86,24 @@ export class FormComponent implements OnInit {
       });
   }
 
+  get currentPage(): FormPage {
+    return this.edition.getPage(this.page);
+  }
+
+  get hasNextPage(): boolean {
+    return this.page < this.edition.totalPages() - 1;
+  }
+
+  get nextPage(): number {
+    return this.edition.edition.formData.filter(page => {
+      return page.pageNumber > this.page && (!page.minorOnly || this.isMinor());
+    }).sort((p1, p2) => p1.pageNumber - p2.pageNumber)[0].pageNumber;
+  }
+
+  get fields(): FormField[] {
+    return this.edition.getFields(this.page);
+  }
+
   isMinor(): boolean {
     let birthdate = null;
     if (this.form !== null && this.form.contains("birthdate")) {
@@ -133,19 +115,7 @@ export class FormComponent implements OnInit {
       birthdate = this.application.content["birthdate"] as string;
     }
 
-    const regex = /^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/;
-    const data = regex.exec(birthdate);
-
-    if (data === null) {
-      return false;
-    }
-
-    const day = +data[1];
-    const month = +data[2];
-    const year = +data[3] + 18;
-
-    const majority = new Date(year, month - 1, day, 0, 0, 0);
-    return majority.getTime() > this.edition.edition.conventionStart;
+    return isMinor(birthdate, this.edition.edition);
   }
 
 }

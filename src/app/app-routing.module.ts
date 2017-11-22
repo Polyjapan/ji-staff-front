@@ -8,10 +8,13 @@ import {ViewApplicationComponent} from "./recap/view-application.component";
 
 const routes: Routes = [
   { path: '', component: WelcomeComponent },
-  { path: 'view', component: ViewApplicationComponent },
-  { path: 'apply', component: FormComponent },
-  { path: 'apply/confirm', component: FormRecapComponent },
-  { path: 'apply/:page', component: FormComponent },
+  // In a near future we might want to create a page to list all the past and future editions, when no edition is open
+  // { path: 'editions/', component: EditionsComponent },
+  { path: 'view/:year', component: ViewApplicationComponent },
+  { path: 'apply/:year/confirm', component: FormRecapComponent },
+  { path: 'apply/:year/:page', component: FormComponent },
+  { path: 'apply/:year', component: FormComponent },
+  { path: 'apply', redirectTo: 'apply/2018'},
   { path: '**', component: PageNotFoundComponent }
 ];
 

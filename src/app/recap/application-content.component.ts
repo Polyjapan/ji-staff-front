@@ -4,6 +4,7 @@ import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {FormService, LoadedForm} from "../services/form.service";
 import {Response} from "@angular/http";
+import {isMinor} from "../utils/isminor";
 
 @Component({
   selector: 'app-application-content',
@@ -23,19 +24,7 @@ export class ApplicationContentComponent {
 
   isMinor(): boolean {
     const birthdate = this.application.content["birthdate"] as string;
-    const regex = /^([0-9]{2})\/([0-9]{2})\/([0-9]{4})$/;
-    const data = regex.exec(birthdate);
-
-    if (data === null) {
-      return false;
-    }
-
-    const day = +data[1];
-    const month = +data[2];
-    const year = +data[3] + 18;
-
-    const majority = new Date(year, month - 1, day, 0, 0, 0);
-    return majority.getTime() > this.edition.edition.conventionStart;
+    return isMinor(birthdate, this.edition.edition);
   }
 
 }

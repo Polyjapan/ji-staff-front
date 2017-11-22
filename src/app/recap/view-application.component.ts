@@ -4,52 +4,23 @@ import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {FormService, LoadedForm} from "../services/form.service";
 import {Response} from "@angular/http";
+import {AbstractEditionComponent} from "../form/abstract-edition-component";
 
 @Component({
   selector: 'app-view-application',
   templateUrl: './view-application.component.html'
 })
-export class ViewApplicationComponent implements OnInit {
-  edition: LoadedForm = null;
-  application: Application = null;
-  loading: boolean = true;
-  error: string = null;
+export class ViewApplicationComponent extends AbstractEditionComponent {
+  constructor(forms: FormService, backend: BackendService, route: ActivatedRoute) {
+    super(forms, backend, route, true);
+  }
 
-  constructor(public forms: FormService, public backend: BackendService, private route: ActivatedRoute) {}
+  completeInit(params: ParamMap): Promise<null> {
+    if (this.application === null) {
+      return Promise.reject("Aucune candidature en cours pour cette édition.");
+    }
 
-  ngOnInit(): void {
-    this.route.url.subscribe(url => {
-        this.forms.getEdition().then(edition => {
-          this.edition = edition;
-
-          if (edition === null) {
-            this.error = "Aucun recrutement ouvert pour le moment.";
-          }
-        }, err => {
-          if (err instanceof Response) {
-            this.error = (err as Response).json()["messages"].join("<br/>");
-          } else {
-            console.log(err);
-            this.error = "Erreur inconnue";
-          }
-        })
-          .then(u => this.backend.getOwnApplication(this.edition.edition.year))
-          .then(app => {
-            this.application = app;
-          }, err => {
-              if (err instanceof Response) {
-                this.error = (err as Response).json()["messages"].join("<br/>");
-              } else {
-                console.log(err);
-                this.error = "Erreur inconnue";
-              }
-            }
-          )
-          .then(u => {
-            this.loading = false;
-          });
-
-      });
+    return Promise.resolve(null);
   }
 
   get stateLabel(): string {

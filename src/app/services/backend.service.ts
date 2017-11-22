@@ -17,7 +17,7 @@ export class BackendService {
   constructor(private http: Http, private authHttp: AuthHttp) {
   }
 
-  getActiveEditions(): Promise<Edition[]> {
+  getEditions(): Promise<Edition[]> {
     return this.http
       .get(this._editionsUrl)
       .toPromise()
@@ -25,7 +25,18 @@ export class BackendService {
   }
 
   getActiveEdition(): Promise<Edition> {
-    return this.getActiveEditions().then(editions => editions.length > 0 ? editions[0] : null);
+    return this.http
+      .get(this._editionsUrl + "/active")
+      .toPromise()
+      .then(result => result.json() as Edition[])
+      .then(result => result.length > 0 ? result[0] : null);
+  }
+
+  getEdition(year: string): Promise<Edition> {
+    return this.http
+    .get(this._editionsUrl + "/" + year)
+    .toPromise()
+    .then(result => result.json() as Edition);
   }
 
   getOwnApplication(year: string): Promise<Application> {
