@@ -1,6 +1,7 @@
 import {Injectable} from "@angular/core";
 import {BackendService} from "./backend.service";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
+import {AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn, Validators} from "@angular/forms";
+import {isDateValid} from "../utils/dateutils";
 
 @Injectable()
 export class FormService {
@@ -44,6 +45,27 @@ export class LoadedForm {
   }
 
 
+  buildValidator(field: FormField): ValidatorFn {
+    let validatorFn: ValidatorFn = null;
+    if (field.required) {
+      validatorFn = Validators.compose([validatorFn, Validators.required]);
+    }
+
+    field.validators.forEach(val => {
+      switch (val.type) {
+        case "intbounds":
+          validatorFn = Validators.compose([validatorFn, Validators.min(val["min"]), Validators.max(val["max"])]);
+          break;
+        case "date":
+          const fn: ValidatorFn = (c: AbstractControl) => isDateValid(c.value as string) ? null : { key: "date" };
+          validatorFn = Validators.compose([validatorFn, fn]);
+      }
+    });
+
+    return validatorFn;
+  }
+
+
   totalPages(): number {
     return this.edition.formData.length;
   }
@@ -58,8 +80,7 @@ export class LoadedForm {
     const group: any = {};
     this.getFields(page).forEach(field => {
       const value = values[field.key];
-      group[field.key] = field.required ? new FormControl(value || '', Validators.required)
-        : new FormControl(value || '');
+      group[field.key] = new FormControl(value || '', this.buildValidator(field));
     });
     return new FormGroup(group);
   }

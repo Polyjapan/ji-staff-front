@@ -1,6 +1,6 @@
 import {Component, Input} from '@angular/core';
 import {LoadedForm} from "../../services/form.service";
-import {isMinor} from "../../utils/isminor";
+import {isMinor} from "../../utils/dateutils";
 
 @Component({
   selector: 'app-application-content',

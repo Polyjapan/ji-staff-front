@@ -17,7 +17,8 @@
   <div class="errorMessage" *ngIf="!isValid">{{field.label}} is required</div>
 </div>-->
 
-<div [formGroup]="form">
+
+<div [formGroup]="form" [class]="groupClass">
   <label [attr.for]="field.key">{{field.required ? "*" : ""}} {{field.label}}</label>
   <p *ngIf="field.helpText && field.helpText !== ''" [innerHtml]="field.helpText | replacenl"></p>
 
@@ -47,5 +48,7 @@
     <textarea *ngSwitchCase="'textarea'" class="form-control" [id]="field.key" [placeholder]="field.label" [formControlName]="field.key"></textarea>
     <p *ngSwitchDefault><b>ERROR: unknown field type {{field.controlType}}</b></p>
   </div>
+  <span *ngIf="fancyError" class="help-block">{{fancyError}}</span>
+
 
 </div>

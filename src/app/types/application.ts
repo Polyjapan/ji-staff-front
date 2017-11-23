@@ -4,5 +4,6 @@ class Application {
   year: string;
   isValidated: string;
   isAccepted: string;
+  isRefused?: string;
   content: Map<string, object>;
 }

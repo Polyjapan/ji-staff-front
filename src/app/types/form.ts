@@ -5,7 +5,12 @@ class FormField {
   required: boolean;
   order: number;
   additionalData: object;
-  validators: object[];
+  validators: BasicValidator[];
+}
+
+class BasicValidator {
+  type: string;
+  message: string;
 }
 
 class FormPage {

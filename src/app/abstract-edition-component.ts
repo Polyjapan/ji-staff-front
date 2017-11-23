@@ -4,7 +4,7 @@ import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {FormGroup} from "@angular/forms";
 import {FormService, LoadedForm} from "./services/form.service";
 import {Response} from "@angular/http";
-import {isMinor} from "./utils/isminor";
+import {isMinor} from "./utils/dateutils";
 import {reject} from "q";
 
 export abstract class AbstractEditionComponent implements OnInit {
