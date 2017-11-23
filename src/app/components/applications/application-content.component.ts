@@ -1,10 +1,6 @@
-import {Component, Input, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {BackendService} from "../services/backend.service";
-import {ActivatedRoute, ParamMap, Router} from "@angular/router";
-import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {FormService, LoadedForm} from "../services/form.service";
-import {Response} from "@angular/http";
-import {isMinor} from "../utils/isminor";
+import {Component, Input} from '@angular/core';
+import {LoadedForm} from "../../services/form.service";
+import {isMinor} from "../../utils/isminor";
 
 @Component({
   selector: 'app-application-content',

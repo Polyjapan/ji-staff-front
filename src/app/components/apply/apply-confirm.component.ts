@@ -1,16 +1,16 @@
 import {Component, OnChanges, OnInit, SimpleChanges} from '@angular/core';
-import {BackendService} from "../services/backend.service";
+import {BackendService} from "../../services/backend.service";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {FormControl, FormGroup, Validators} from "@angular/forms";
-import {FormService, LoadedForm} from "../services/form.service";
+import {FormService, LoadedForm} from "../../services/form.service";
 import {Response} from "@angular/http";
-import {AbstractEditionComponent} from "../form/abstract-edition-component";
+import {AbstractEditionComponent} from "../../abstract-edition-component";
 
 @Component({
-  selector: 'app-form-recap',
-  templateUrl: './form-recap.component.html'
+  selector: 'app-apply-confirm',
+  templateUrl: './apply-confirm.component.html'
 })
-export class FormRecapComponent extends AbstractEditionComponent {
+export class ApplyConfirmComponent extends AbstractEditionComponent {
   form: FormGroup;
 
   constructor(forms: FormService, backend: BackendService, route: ActivatedRoute, public router: Router) {

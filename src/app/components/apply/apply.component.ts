@@ -1,17 +1,17 @@
 import {Component} from '@angular/core';
-import {BackendService} from "../services/backend.service";
+import {BackendService} from "../../services/backend.service";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {FormGroup} from "@angular/forms";
-import {FormService} from "../services/form.service";
+import {FormService} from "../../services/form.service";
 import {Response} from "@angular/http";
-import {isMinor} from "../utils/isminor";
-import {AbstractEditionComponent} from "./abstract-edition-component";
+import {isMinor} from "../../utils/isminor";
+import {AbstractEditionComponent} from "../../abstract-edition-component";
 
 @Component({
-  selector: 'app-form',
-  templateUrl: './form.component.html'
+  selector: 'app-apply',
+  templateUrl: './apply.component.html'
 })
-export class FormComponent extends AbstractEditionComponent {
+export class ApplyComponent extends AbstractEditionComponent {
   page: number = 0;
   form: FormGroup;
 
