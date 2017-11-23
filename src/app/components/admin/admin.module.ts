@@ -4,10 +4,23 @@ import {BrowserModule} from "@angular/platform-browser";
 import {ReactiveFormsModule} from "@angular/forms";
 import {ApplicationContentModule} from "../applications/application-content.module";
 import {PipesModule} from "../../pipes/pipes.module";
+import {AdminHomeComponent} from "./admin-home.component";
+import {AdminTemplateComponent} from "./admin-template.component";
+import {AdminYearTemplateComponent} from "./admin-year-template.component";
+import {AdminApplicationsComponent} from "./admin-applications.component";
+import {AdminYearComponent} from "./admin-year.component";
+import {AdminApplicationDetailComponent} from "./admin-application-detail.component";
+import {ApplicationsService} from "./applications.service";
+import {AdminGuardService} from "./admin-guard.service";
 
 @NgModule({
   declarations: [
-
+    AdminHomeComponent,
+    AdminTemplateComponent,
+    AdminYearTemplateComponent,
+    AdminApplicationsComponent,
+    AdminYearComponent,
+    AdminApplicationDetailComponent
   ],
   imports: [
     BrowserModule,
@@ -15,7 +28,10 @@ import {PipesModule} from "../../pipes/pipes.module";
     ApplicationContentModule,
     AdminRoutingModule,
     PipesModule
+  ],
+  providers: [
+    ApplicationsService,
+    AdminGuardService
   ]
 })
-export class ApplyModule {
-}
+export class AdminModule {}

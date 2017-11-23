@@ -12,6 +12,7 @@ import {FormService} from "./services/form.service";
 import {ApplicationContentModule} from "./components/applications/application-content.module";
 import {ApplyModule} from "./components/apply/apply.module";
 import {ViewModule} from "./components/view/view.module";
+import {AdminModule} from "./components/admin/admin.module";
 
 @NgModule({
   declarations: [
@@ -27,6 +28,7 @@ import {ViewModule} from "./components/view/view.module";
     ApplicationContentModule,
     ApplyModule,
     ViewModule,
+    AdminModule,
 
     AppRoutingModule
   ],

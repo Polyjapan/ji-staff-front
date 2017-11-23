@@ -46,9 +46,29 @@ export class BackendService {
       .then(result => result.json() as Application);
   }
 
+  getApplications(year: string, state: string): Promise<Application[]> {
+    return this.authHttp
+      .get(this._applicationsUrl + "/" + year + "/" + state)
+      .toPromise()
+      .then(result => result.json() as Application[]);
+  }
+
+  getApplication(year: string, userId: string): Promise<Application> {
+    return this.authHttp
+      .get(this._applicationsUrl + "/" + year + "/" + userId)
+      .toPromise()
+      .then(result => result.json() as Application);
+  }
+
   validateApplication(year: string): Promise<Response> {
     return this.authHttp
       .put(this._applicationsUrl + "/" + year, {})
+      .toPromise();
+  }
+
+  setApplicationStatus(year: string, userId: string, state: string): Promise<Response> {
+    return this.authHttp
+      .put(this._applicationsUrl + "/" + year + "/" + state, {'userId': userId})
       .toPromise();
   }
 
@@ -59,4 +79,16 @@ export class BackendService {
           headers: new Headers({'Content-Type': 'application/json'})
         }).toPromise();
   }
+}
+
+export class Application {
+  userId: string;
+  mail: string;
+  year: string;
+  isValidated: string;
+  isAccepted: boolean;
+  isRefused?: boolean;
+  validationDate?: number;
+  statusChangedBy?: string[];
+  content: Map<string, object>;
 }

@@ -11,7 +11,8 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-        <li><a routerLink="apply" class="navlink">Ma candidature</a></li>
+        <li><a routerLink="/apply" class="navlink">Ma candidature</a></li>
+        <li *ngIf="auth.isAdmin()"><a routerLink="/admin" class="navlink">Espace Admin</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right" *ngIf="auth.isAuthenticated()">
         <li><a class="navlink" href="#" (click)="auth.logout()"><b class="glyphicon glyphicon-off"></b> Déconnexion</a></li>

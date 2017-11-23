@@ -62,6 +62,11 @@ export class AuthService {
     return this.jwtHelper.decodeToken(token);
   }
 
+  public isAdmin(): boolean {
+    const token = this.getToken();
+    return token ? token["https://staff.japan-impact.ch/admin"] as boolean : false;
+  }
+
   public isAuthenticated(): boolean {
     const token = localStorage.getItem("id_token");
     if (token === null) {

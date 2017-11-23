@@ -5,6 +5,7 @@ import {FormControl, FormGroup, Validators} from "@angular/forms";
 import {FormService, LoadedForm} from "../../services/form.service";
 import {Response} from "@angular/http";
 import {AbstractEditionComponent} from "../../abstract-edition-component";
+import {getStateFancy, getStateLabel} from "../../utils/statelabels";
 
 @Component({
   selector: 'app-view-application',
@@ -24,22 +25,10 @@ export class ViewApplicationComponent extends AbstractEditionComponent {
   }
 
   get stateLabel(): string {
-    if (this.application.isAccepted) {
-      return "label-success";
-    } else if (this.application.isValidated) {
-      return "label-warning";
-    }
-    return "label-danger";
+    return getStateLabel(this.application);
   }
 
   get stateContent(): string {
-    if (this.application.isAccepted) {
-      return "Acceptée";
-    } else if (this.application.isValidated) {
-      return "En attente";
-    }
-    return "Non envoyée";
+    return getStateFancy(this.application);
   }
-
-
 }
