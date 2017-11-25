@@ -17,7 +17,7 @@ export function getState(application: Application): string {
   } else if (application.isRefused) {
     return "refused";
   } else if (application.isValidated) {
-    return "validated";
+    return "waiting";
   }
   return null;
 }

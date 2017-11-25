@@ -56,7 +56,9 @@ export class ApplicationsService {
       });
 
       this.getByState(year, newStatus).then(applications => {
-        applications.push(application);
+        if (applications.filter(app => app.userId === application.userId).length === 0) {
+          applications.push(application);
+        }
       });
 
       return succ;

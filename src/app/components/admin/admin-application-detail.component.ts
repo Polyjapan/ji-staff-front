@@ -19,6 +19,7 @@ import {getState, getStateFancy, getStateLabel} from "../../utils/statelabels";
     <div class="well" *ngIf="application">
       <p>Cette candidature est actuellement <b class="label {{stateLabel}}">{{stateContent}}</b></p>
       <p *ngIf="application.validationDate">Validée le <b>{{date}}</b></p>
+      <p *ngIf="application.mail">Mail : <code>{{application.mail}}</code></p>
       <p *ngIf="application.statusChangedBy">Dernier changement d'état par <b>{{application.statusChangedBy[1]}}</b>
         (<code>{{application.statusChangedBy[0]}}</code>)</p>
       <p>
