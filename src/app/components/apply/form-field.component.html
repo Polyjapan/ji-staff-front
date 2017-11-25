@@ -27,6 +27,7 @@
     <input *ngSwitchCase="'email'" type="email" class="form-control" [id]="field.key" [placeholder]="field.label" [formControlName]="field.key">
     <input *ngSwitchCase="'number'" type="number" class="form-control" [id]="field.key" [placeholder]="field.label" [formControlName]="field.key">
     <select [id]="field.key" *ngSwitchCase="'select'" [formControlName]="field.key" class="form-control" >
+      <option selected [value]="null">---</option>
       <option *ngFor="let opt of field.additionalData['values']" [value]="opt">{{opt}}</option>
     </select>
     <div class="checkbox" *ngSwitchCase="'checkbox'">
