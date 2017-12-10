@@ -86,6 +86,8 @@ class CachedApplications {
 }
 
 export class SortedArray<T> implements Iterable<T> {
+  private changeListeners: ((content: SortedArray<T>) => void)[] = [];
+
   constructor(private underlying: T[], private comparator: (a: T, b: T) => number) {
     underlying.sort(comparator);
   }
@@ -101,6 +103,7 @@ export class SortedArray<T> implements Iterable<T> {
   push(...elem: T[]) {
     elem.forEach(e => this.underlying.push(e));
     this.underlying.sort(this.comparator);
+    this.changeListeners.forEach(l => l(this));
   }
 
   get length(): number {
@@ -109,5 +112,10 @@ export class SortedArray<T> implements Iterable<T> {
 
   get(n: number): T {
     return this.underlying[n];
+  }
+
+  onChange(listener: ((content: SortedArray<T>) => void)) {
+    listener(this);
+    this.changeListeners.push(listener);
   }
 }

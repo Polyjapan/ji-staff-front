@@ -5,6 +5,8 @@ import {Application, BackendService} from "../../services/backend.service";
 import {ActivatedRoute, ParamMap} from "@angular/router";
 import {ApplicationsService, SortedArray} from "./applications.service";
 import {isMinor} from "../../utils/dateutils";
+import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
+
 
 @Component({
   selector: 'app-admin-applications-template',
@@ -19,6 +21,7 @@ import {isMinor} from "../../utils/dateutils";
     <div class="well" *ngIf="edition && applications">
       <h2>Candidatures {{title}}
         <button class="btn btn-primary" (click)="forceRefresh()"><b class="glyphicon glyphicon-refresh"></b></button>
+        <a class="btn btn-primary" [href]="csvUrl" [download]="fileName"><b class="glyphicon glyphicon-download-alt"></b></a>
       </h2>
       <table class="table table-bordered">
         <thead>
@@ -53,8 +56,9 @@ export class AdminApplicationsComponent extends AbstractEditionComponent impleme
 
   selected: string;
   applications: SortedArray<Application>;
+  csvUrl: SafeUrl;
 
-  constructor(forms: FormService, backend: BackendService, public applicationsService: ApplicationsService, route: ActivatedRoute) {
+  constructor(forms: FormService, backend: BackendService, public applicationsService: ApplicationsService, route: ActivatedRoute, private sanitizer: DomSanitizer) {
     super(forms, backend, route, true, false);
   }
 
@@ -75,6 +79,15 @@ export class AdminApplicationsComponent extends AbstractEditionComponent impleme
   reloadApplications(force: boolean = false): Promise<void> {
     return this.applicationsService.getByState(this.year, this.selected, force).then(rep => {
       this.applications = rep;
+      this.applications.onChange(apps => {
+        let csv = "Nom,Prénom,Mail,Date de naissance\n";
+        for (let i = 0; i < this.applications.length; ++i) {
+          csv += this.toCSV(this.applications.get(i)) + "\n";
+        }
+        const blob = new Blob([ csv ], { type : 'text/csv' });
+        console.log(blob);
+        this.csvUrl = this.sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(blob));
+      });
     });
   }
 
@@ -101,5 +114,13 @@ export class AdminApplicationsComponent extends AbstractEditionComponent impleme
       default:
         return "en attente";
     }
+  }
+
+  get fileName() {
+    return this.selected + ".csv";
+  }
+
+  private toCSV(application: Application): string {
+    return application.content['lastname'] + "," + application.content['firstname'] + "," + application.mail + "," + application.content['birthdate'];
   }
 }
