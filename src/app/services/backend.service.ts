@@ -80,6 +80,14 @@ export class BackendService {
         }).toPromise();
   }
 
+  addComment(year: string, userId: string, comment: string): Promise<Response> {
+    return this.authHttp
+      .post(this._applicationsUrl + "/" + year + "/" + "comments", {'userId': userId, 'comment': comment},
+        {
+          headers: new Headers({'Content-Type': 'application/json'})
+        }).toPromise();
+  }
+
   adminUpdateApplication(year: string, page: number, userId: string, content: object): Promise<Response> {
     return this.authHttp
       .put(this._applicationsUrl + "/" + year + "/" + userId + "/" + page, content,
@@ -98,5 +106,13 @@ export class Application {
   isRefused?: boolean;
   validationDate?: number;
   statusChangedBy?: string[];
+  comments?: Comment[];
   content: Map<string, object>;
+}
+
+export class Comment {
+  authorName: string;
+  authorId: string;
+  date: number;
+  comment: string;
 }

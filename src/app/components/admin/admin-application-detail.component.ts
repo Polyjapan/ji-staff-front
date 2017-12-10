@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {AbstractEditionComponent} from "../../abstract-edition-component";
 import {FormService} from "../../services/form.service";
-import {BackendService} from "../../services/backend.service";
+import {BackendService, Application, Comment} from "../../services/backend.service";
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {ApplicationsService} from "./applications.service";
 import {getState, getStateFancy, getStateLabel} from "../../utils/statelabels";
@@ -26,6 +26,30 @@ import {getState, getStateFancy, getStateLabel} from "../../utils/statelabels";
         <button (click)="accept()" class="btn btn-success">Accepter cette candidature</button>
         <button (click)="refuse()" class="btn btn-danger">Refuser cette candidature</button>
       </p>
+    </div>
+
+    <div class="well" *ngIf="application">
+
+      <h3>Commentaires :</h3>
+      <div class="form-horizontal">
+        <div class="form-group">
+          <label for="newComment" class="col-sm-2 control-label">Nouveau commentaire</label>
+          <div class="col-sm-10">
+            <textarea class="form-control" #newComment id="newComment" name="newComment"></textarea>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <button class="btn btn-primary" #newCommentBtn (click)="addComment(newComment, newCommentBtn)">Envoyer</button>
+          </div>
+        </div>
+      </div>
+      <ul>
+        <li *ngFor="let comment of application.comments">
+          <b>{{comment.authorName}} le {{dateOfComment(comment)}} : </b>{{comment.comment}}
+        </li>
+      </ul>
     </div>
 
     <app-application-content *ngIf="edition && application" [edition]="edition" [editable]="true"
@@ -91,5 +115,32 @@ export class AdminApplicationDetailComponent extends AbstractEditionComponent im
     const date = new Date(this.application.validationDate);
     return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " à " +
       date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+  }
+
+  dateOfComment(comment: Comment): string {
+    const date = new Date(comment.date);
+    return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " à " +
+      date.getHours() + ":" + date.getMinutes() + ":" + date.getSeconds();
+  }
+
+  addComment(field: HTMLTextAreaElement, btn: HTMLButtonElement) {
+    const val = field.value;
+    btn.disabled = true;
+    this.backend.addComment(this.year, this.selected, val)
+      .then(success => {
+        console.log(success)
+        this.application.comments.unshift(success.json()["comment"]);
+        field.value = "";
+        btn.disabled = false;
+      })
+      .catch(err => {
+        console.log(err);
+        btn.disabled = false;
+        if (err instanceof Response) {
+          this.error = (err as Response).json()["messages"].join("<br/>");
+        } else {
+          this.error = "Erreur inconnue";
+        }
+      });
   }
 }
