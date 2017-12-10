@@ -10,10 +10,7 @@ import {Application} from "../../services/backend.service";
 export class ApplicationContentComponent {
   @Input() edition: LoadedForm = null;
   @Input() application: Application = null;
-
-  getValue(key: string) {
-    return this.application.content[key];
-  }
+  @Input() editable: boolean = false;
 
   get pages(): FormPage[] {
     return this.edition.edition.formData.filter(page => !page.minorOnly || this.isMinor());

@@ -28,7 +28,7 @@ import {getState, getStateFancy, getStateLabel} from "../../utils/statelabels";
       </p>
     </div>
 
-    <app-application-content *ngIf="edition && application" [edition]="edition"
+    <app-application-content *ngIf="edition && application" [edition]="edition" [editable]="true"
                              [application]="application"></app-application-content>
 
     <div *ngIf="!error && loading">

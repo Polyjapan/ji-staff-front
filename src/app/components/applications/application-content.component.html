@@ -1,6 +1,14 @@
 <div class="well" *ngFor="let page of pages">
   <h2>{{page.title}}</h2>
   <ul>
-    <li *ngFor="let f of page.fields"><b>{{f.label}}</b> : {{getValue(f.key)}}</li>
+    <li *ngFor="let f of page.fields">
+      <app-application-single-field-form
+        [edition] = "edition"
+        [editable] = "editable"
+        [application] = "application"
+        [page] = "page.pageNumber"
+        [field] = "f"
+      ></app-application-single-field-form>
+    </li>
   </ul>
 </div>

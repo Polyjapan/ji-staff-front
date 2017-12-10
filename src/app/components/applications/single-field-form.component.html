@@ -1,0 +1,21 @@
+<ng-container *ngIf="!editing || !editable">
+
+  <button class="btn btn-primary btn-xs" *ngIf="editable" (click)="openEdit()"><b class="glyphicon glyphicon-pencil"></b></button>
+  <b>{{field.label}}
+  </b> : {{getValue(field.key)}}
+</ng-container>
+<ng-container *ngIf="editing && editable">
+  <div *ngIf="error">
+    <div class="alert alert-danger" role="alert">
+      <b>Une erreur s'est produite : </b>
+      <p [innerHtml]="error"></p>
+    </div>
+  </div>
+
+  <form (ngSubmit)="onSubmit()" [formGroup]="form">
+    <app-form-field [field]="field" [form]="form"></app-form-field>
+
+    <button type="submit" [disabled]="sending" class="btn btn-success">Enregistrer</button>
+  </form>
+  <br>
+</ng-container>

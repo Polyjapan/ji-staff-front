@@ -79,6 +79,14 @@ export class BackendService {
           headers: new Headers({'Content-Type': 'application/json'})
         }).toPromise();
   }
+
+  adminUpdateApplication(year: string, page: number, userId: string, content: object): Promise<Response> {
+    return this.authHttp
+      .put(this._applicationsUrl + "/" + year + "/" + userId + "/" + page, content,
+        {
+          headers: new Headers({'Content-Type': 'application/json'})
+        }).toPromise();
+  }
 }
 
 export class Application {
