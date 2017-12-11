@@ -19,7 +19,7 @@ import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
     </div>
 
     <div class="well" *ngIf="edition && applications">
-      <h2>Candidatures {{title}}
+      <h2>Candidatures {{title}} ({{amount}})
         <button class="btn btn-primary" (click)="forceRefresh()"><b class="glyphicon glyphicon-refresh"></b></button>
         <a class="btn btn-primary" [href]="csvUrl" [download]="fileName"><b class="glyphicon glyphicon-download-alt"></b></a>
       </h2>
@@ -103,6 +103,14 @@ export class AdminApplicationsComponent extends AbstractEditionComponent impleme
       return Promise.reject("Aucun état demandé.");
     }
     return super.preInit(params);
+  }
+
+  get amount() {
+    if (this.applications) {
+      return this.applications.length + "";
+    } else {
+      return "...";
+    }
   }
 
   get title() {
