@@ -80,10 +80,18 @@ export class AdminApplicationsComponent extends AbstractEditionComponent impleme
     return this.applicationsService.getByState(this.year, this.selected, force).then(rep => {
       this.applications = rep;
       this.applications.onChange(apps => {
-        let csv = "Nom,Prénom,Mail,Date de naissance\n";
+        let csv = "\"Mail\"";
+        for (let i = 0; i < this.edition.totalPages(); ++i) {
+          for (const field of this.edition.getFields(i)) {
+            csv += ",\"" + field.key + "\"";
+          }
+        }
+        csv += "\n";
+
         for (let i = 0; i < this.applications.length; ++i) {
           csv += this.toCSV(this.applications.get(i)) + "\n";
         }
+
         const blob = new Blob([ csv ], { type : 'text/csv' });
         console.log(blob);
         this.csvUrl = this.sanitizer.bypassSecurityTrustUrl(window.URL.createObjectURL(blob));
@@ -129,6 +137,14 @@ export class AdminApplicationsComponent extends AbstractEditionComponent impleme
   }
 
   private toCSV(application: Application): string {
-    return application.content['lastname'] + "," + application.content['firstname'] + "," + application.mail + "," + application.content['birthdate'];
+    let csv = "\"" + application.mail + "\"";
+
+    for (let i = 0; i < this.edition.totalPages(); ++i) {
+      for (const field of this.edition.getFields(i)) {
+        csv += ",\"" + application.content[field.key] + "\"";
+      }
+    }
+
+    return csv;
   }
 }
