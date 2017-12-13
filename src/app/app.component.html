@@ -21,14 +21,14 @@
   </div>
 </nav>
 
-<main class="container" *ngIf="auth.isAuthenticated()">
+<main class="container-fluid" *ngIf="auth.isAuthenticated()">
   <br/>
   <br/>
   <br/>
   <router-outlet></router-outlet>
 </main>
 
-<main class="container" *ngIf="!auth.isAuthenticated()">
+<main class="container-fluid" *ngIf="!auth.isAuthenticated()">
   <br>
   <div class="jumbotron">
     <h1>Extranet Staffs Japan Impact</h1>

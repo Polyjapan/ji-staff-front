@@ -6,6 +6,7 @@ import {ActivatedRoute, ParamMap} from "@angular/router";
 import {ApplicationsService, SortedArray} from "./applications.service";
 import {isMinor} from "../../utils/dateutils";
 import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
+import {getState} from "../../utils/statelabels";
 
 
 @Component({
@@ -18,32 +19,39 @@ import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
       </div>
     </div>
 
-    <div class="well" *ngIf="edition && applications">
-      <h2>Candidatures {{title}} ({{amount}})
-        <button class="btn btn-primary" (click)="forceRefresh()"><b class="glyphicon glyphicon-refresh"></b></button>
-        <a class="btn btn-primary" [href]="csvUrl" [download]="fileName"><b class="glyphicon glyphicon-download-alt"></b></a>
-      </h2>
-      <table class="table table-bordered">
+    <h2>Candidatures {{title}} ({{amount}})
+      <button class="btn btn-primary" (click)="forceRefresh()"><b class="glyphicon glyphicon-refresh"></b></button>
+      <a class="btn btn-primary" [href]="csvUrl" [download]="fileName"><b class="glyphicon glyphicon-download-alt"></b></a>
+    </h2>
+      <table class="table table-striped table-hover" *ngIf="!loading">
         <thead>
         <tr>
-          <th>Nom</th>
-          <th>Prénom</th>
-          <th>EMail</th>
-          <th>Date de naissance</th>
+          <th *ngFor="let f of fields">{{f}}</th>
+          <th>Commentaires</th>
           <th>Actions</th>
         </tr>
         </thead>
         <tbody>
         <tr *ngFor="let application of applications">
-          <td>{{application.content['lastname']}}</td>
-          <td>{{application.content['firstname']}}</td>
-          <td>{{application.mail}}</td>
-          <td>{{application.content['birthdate'] + minorTag(application)}}</td>
-          <td><a routerLink="/admin/{{year}}/application/view/{{application.userId}}">Voir</a></td>
+          <td *ngFor="let line of toList(application)">
+            {{line}}
+          </td>
+          <td>
+            <ul>
+              <li *ngFor="let comment of application.comments">
+                <b>{{comment.authorName}} : </b>{{comment.comment}}
+              </li>
+            </ul>
+          </td>
+          <td>
+            <a routerLink="/admin/{{year}}/application/view/{{application.userId}}" class="btn btn-primary">Voir</a>
+
+            <button (click)="accept(application)" class="btn btn-success">Accepter</button>
+            <button (click)="refuse(application)" class="btn btn-danger">Refuser</button>
+          </td>
         </tr>
         </tbody>
       </table>
-    </div>
 
     <div *ngIf="!error && loading">
       <div class="well">
@@ -57,6 +65,7 @@ export class AdminApplicationsComponent extends AbstractEditionComponent impleme
   selected: string;
   applications: SortedArray<Application>;
   csvUrl: SafeUrl;
+  fields: string[];
 
   constructor(forms: FormService, backend: BackendService, public applicationsService: ApplicationsService, route: ActivatedRoute, private sanitizer: DomSanitizer) {
     super(forms, backend, route, true, false);
@@ -81,9 +90,12 @@ export class AdminApplicationsComponent extends AbstractEditionComponent impleme
       this.applications = rep;
       this.applications.onChange(apps => {
         let csv = "\"Mail\"";
+        this.fields = [];
+        this.fields.push("Mail");
         for (let i = 0; i < this.edition.totalPages(); ++i) {
           for (const field of this.edition.getFields(i)) {
             csv += ",\"" + field.key + "\"";
+            this.fields.push(field.label);
           }
         }
         csv += "\n";
@@ -146,5 +158,37 @@ export class AdminApplicationsComponent extends AbstractEditionComponent impleme
     }
 
     return csv;
+  }
+
+  toList(application: Application): string[] {
+    const list = [];
+    list.push(application.mail);
+
+    for (let i = 0; i < this.edition.totalPages(); ++i) {
+      for (const field of this.edition.getFields(i)) {
+        list.push(application.content[field.key]);
+      }
+    }
+
+    return list;
+  }
+
+  accept(application: Application) {
+    this.applicationsService.accept(this.year, application)
+      .then(succ => {
+        if (this.selected !== "accepted") {
+          this.applications.remove(application);
+        }
+      })
+      .catch(err => this.catchError(err));
+  }
+
+  refuse(application: Application) {
+    this.applicationsService.refuse(this.year, application)
+      .then(succ => {
+        if (this.selected !== "refused") {
+          this.applications.remove(application);
+    }})
+      .catch(err => this.catchError(err));
   }
 }
