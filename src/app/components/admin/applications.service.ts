@@ -106,6 +106,15 @@ export class SortedArray<T> implements Iterable<T> {
     this.changeListeners.forEach(l => l(this));
   }
 
+  remove(elem: T) {
+    const index = this.underlying.indexOf(elem);
+    if (index !== -1) {
+      this.underlying.splice(index, 1);
+      this.underlying.sort(this.comparator);
+      this.changeListeners.forEach(l => l(this));
+    }
+  }
+
   get length(): number {
     return this.underlying.length;
   }

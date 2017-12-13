@@ -39,7 +39,11 @@ import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
           <td>{{application.content['firstname']}}</td>
           <td>{{application.mail}}</td>
           <td>{{application.content['birthdate'] + minorTag(application)}}</td>
-          <td><a routerLink="/admin/{{year}}/application/view/{{application.userId}}">Voir</a></td>
+          <td>
+            <a routerLink="/admin/{{year}}/application/view/{{application.userId}}" class="btn btn-primary">Voir</a>
+
+            <button (click)="accept(application)" class="btn btn-success">Accepter</button>
+            <button (click)="refuse(application)" class="btn btn-danger">Refuser</button></td>
         </tr>
         </tbody>
       </table>
@@ -83,10 +87,10 @@ export class AdminApplicationsComponent extends AbstractEditionComponent impleme
         let csv = "\"Mail\"";
         for (let i = 0; i < this.edition.totalPages(); ++i) {
           for (const field of this.edition.getFields(i)) {
-            csv += ",\"" + field.key + "\"";
+            csv += ",\"" + field.label + "\"";
           }
         }
-        csv += "\n";
+        csv += ",\"Commentaires\"\n";
 
         for (let i = 0; i < this.applications.length; ++i) {
           csv += this.toCSV(this.applications.get(i)) + "\n";
@@ -141,10 +145,40 @@ export class AdminApplicationsComponent extends AbstractEditionComponent impleme
 
     for (let i = 0; i < this.edition.totalPages(); ++i) {
       for (const field of this.edition.getFields(i)) {
-        csv += ",\"" + application.content[field.key] + "\"";
+        if (application.content[field.key]) {
+          csv += ",\"" + application.content[field.key] + "\"";
+        } else {
+          csv += ",\"\"";
+        }
       }
     }
+    csv += ",\"";
+    if (application.comments) {
+      for (const comment of application.comments) {
+        csv += comment.authorName + ": " + comment.comment + "\n";
+      }
+    }
+    csv += "\"";
 
     return csv;
+  }
+
+  accept(application: Application) {
+    this.applicationsService.accept(this.year, application)
+      .then(succ => {
+        if (this.selected !== "accepted") {
+          this.applications.remove(application);
+        }
+      })
+      .catch(err => this.catchError(err));
+  }
+
+  refuse(application: Application) {
+    this.applicationsService.refuse(this.year, application)
+      .then(succ => {
+        if (this.selected !== "refused") {
+          this.applications.remove(application);
+        }})
+      .catch(err => this.catchError(err));
   }
 }
