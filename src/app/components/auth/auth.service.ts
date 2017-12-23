@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AUTH_CONFIG } from './auth0-variables';
-import { Router } from '@angular/router';
+import {ActivatedRoute, Router, RouterState} from '@angular/router';
 import * as auth0 from 'auth0-js';
 import 'rxjs/add/operator/toPromise';
 import {JwtHelper} from "angular2-jwt";
@@ -26,6 +26,10 @@ export class AuthService {
   constructor(public router: Router) {}
 
   public login(): void {
+    // Get router state
+    const url = this.router.routerState.snapshot.url;
+    sessionStorage.setItem("loginRedirect", url);
+
     this.auth0.authorize();
   }
 
@@ -36,7 +40,9 @@ export class AuthService {
       if (authResult && authResult.idToken) {
         window.location.hash = '';
         this.setSession(authResult);
-        this.router.navigate(['/']);
+        const target = sessionStorage.getItem("loginRedirect");
+        this.router.navigateByUrl(target == null ? "/" : target);
+        sessionStorage.removeItem("loginRedirect");
       } else if (err) {
         console.log(err);
         alert(`Authentication error: ${err.error}`);
