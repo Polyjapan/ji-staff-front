@@ -73,6 +73,12 @@ export class AuthService {
     return token ? token["https://staff.japan-impact.ch/admin"] as boolean : false;
   }
 
+  public isStaff(year: string): boolean {
+    const token = this.getToken();
+    return token && token["https://staff.japan-impact.ch/isStaff"] ?
+       (token["https://staff.japan-impact.ch/isStaff"] as string[]).indexOf(year) !== -1 : false;
+  }
+
   public isAuthenticated(): boolean {
     const token = localStorage.getItem("id_token");
     if (token === null) {

@@ -1,5 +1,7 @@
 # JIStaff
 
+Note to next maintainers : the year 2018 has been hardcoded in a lot of places. This will have to be updated before next edition.
+
 This is the frontend for the Japan Impact Staff Extranet. It is writen in TypeScript with Angular. It uses a backend written in Scala and delegates authentication to auth0.com.
 
 ## Development server

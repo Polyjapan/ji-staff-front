@@ -23,7 +23,8 @@ import {ActivatedRoute, ParamMap} from "@angular/router";
         <li role="presentation" [class.active]="selected === 'accepted'"><a
           routerLink="applications/accepted">Acceptées</a></li>
       </ul>
-
+      <!--<p>Refresh les droits d'accès à l'espace staff : <button (click)="refreshAccessRights()" class="btn">Refresh</button></p>-->
+      <!-- This button is commented out as it is normally not needed and its computation takes a long time. -->
     </div>
     <router-outlet *ngIf="edition"></router-outlet>
 
@@ -49,6 +50,10 @@ export class AdminYearTemplateComponent extends AbstractEditionComponent impleme
       // (+) before `params.get()` turns the string into a number
       this.selected = params.get('state');
     });
+  }
+
+  refreshAccessRights() {
+    this.backend.refreshAccessRights(this.year);
   }
 
 }

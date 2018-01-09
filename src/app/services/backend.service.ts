@@ -95,6 +95,10 @@ export class BackendService {
           headers: new Headers({'Content-Type': 'application/json'})
         }).toPromise();
   }
+
+  refreshAccessRights(year: string) {
+    this.authHttp.post(this._applicationsUrl + "/" + year + "/grants", {}).toPromise();
+  }
 }
 
 export class Application {
