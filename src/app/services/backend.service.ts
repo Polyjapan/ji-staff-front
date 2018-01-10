@@ -3,6 +3,9 @@ import {Headers, Http, Response} from "@angular/http";
 import 'rxjs/add/operator/toPromise';
 import {AuthHttp} from "angular2-jwt";
 import {environment} from '../../environments/environment';
+import {AuthService} from "../components/auth/auth.service";
+import {FileUploader} from "ng2-file-upload";
+import {FileLikeObject} from "ng2-file-upload/file-upload/file-like-object.class";
 
 
 @Injectable()
@@ -14,7 +17,7 @@ export class BackendService {
   private _editionsUrl = this._baseApiUrl + "/editions";
   private _applicationsUrl = this._baseApiUrl + "/applications";
 
-  constructor(private http: Http, private authHttp: AuthHttp) {
+  constructor(private http: Http, private authHttp: AuthHttp, private authService: AuthService) {
   }
 
   getEditions(): Promise<Edition[]> {
@@ -99,6 +102,65 @@ export class BackendService {
   refreshAccessRights(year: string) {
     this.authHttp.post(this._applicationsUrl + "/" + year + "/grants", {}).toPromise();
   }
+
+  uploadPicture(year: string): FileUploader {
+    return new FileUploader({
+      autoUpload: true,
+      removeAfterUpload: true,
+      queueLimit: 1,
+      url: this._applicationsUrl + "/" + year + "/picture",
+      method: 'PUT',
+      authToken: "Bearer " + this.authService.getRawToken(),
+      disableMultipart: true,
+      allowedMimeType: [
+        "image/jpeg",
+        "image/bmp",
+        "image/png",
+        "image/tiff"
+      ]
+    });
+  }
+
+  uploadAllowance(year: string): FileUploader {
+    return new FileUploader({
+      autoUpload: true,
+      removeAfterUpload: true,
+      queueLimit: 1,
+      url: this._applicationsUrl + "/" + year + "/parentalAuthorization",
+      method: 'PUT',
+      authToken: "Bearer " + this.authService.getRawToken(),
+      disableMultipart: true,
+      allowedMimeType: [
+        "image/jpeg",
+        "image/bmp",
+        "image/png",
+        "image/tiff",
+        "application/pdf"
+      ]
+    });
+  }
+
+  uploadEmptyForm(year: string): FileUploader {
+    return this.errorItem(new FileUploader({
+      autoUpload: true,
+      removeAfterUpload: true,
+      queueLimit: 1,
+      url: this._editionsUrl + "/" + year + "/parentalForm",
+      method: 'PUT',
+      authToken: "Bearer " + this.authService.getRawToken(),
+      disableMultipart: true,
+      allowedMimeType: [
+        "application/pdf"
+      ]
+    }));
+  }
+
+  private errorItem(uploader: FileUploader): FileUploader {
+    uploader.onWhenAddingFileFailed = function (item: FileLikeObject, filter: any, options: any) {
+      alert("Erreur d'envoi : format de fichier invalide.");
+    };
+    return uploader;
+  }
 }
 
 export class Application {
@@ -112,6 +174,8 @@ export class Application {
   statusChangedBy?: string[];
   comments?: Comment[];
   content: Map<string, object>;
+  picture?: string;
+  parentalAllowance?: string;
 }
 
 export class Comment {

@@ -1,0 +1,49 @@
+
+<div *ngIf="!error && loading">
+  <div class="well">
+    <h2>Chargement des données en cours...</h2><br/>
+  </div>
+</div>
+
+<div *ngIf="error">
+  <div class="alert alert-danger" role="alert">
+    <b>Une erreur s'est produite : </b>
+    <p [innerHtml]="error"></p>
+  </div>
+</div>
+
+<div class="well" *ngIf="edition && application && !loading && pictureUploader && allowanceUploader">
+  <h1>Bienvenue sur l'espace staff, {{auth.getToken().given_name}}</h1>
+  <p>Félicitations, vous êtes membres du staff JapanImpact {{year}} ! Vous trouverez sur cet espace des informations
+  importantes liées à votre implication, aussi il est important de venir le consulter régulièrement.</p>
+
+  <h2>Photo de profil</h2>
+  <p>Tous les membres du staff doivent fournir une photo qui sera utilisée sur leur badge.</p>
+  <div class="row">
+    <div class="col-md-5" *ngIf="application && application.picture">
+      <img src="{{pictureUrl}}" width="300" />
+    </div>
+    <div class="col-md-5">
+      <h2>Uploader une image</h2>
+      <input type="file" ng2FileSelect [uploader]="pictureUploader">
+      <div class="progress" *ngIf="pictureUploader.queue[0]">
+        <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{ 'width': pictureUploader.queue[0].progress + '%' }"></div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="isMinor()">
+    <h2>Autorisation Parentale</h2>
+    <p>Vous êtes mineur au moment de JapanImpact, aussi nous avons besoin de votre autorisation parentale.</p>
+    <p>Merci de télécharger le document suivant et de le faire signer par vos parents. Vous devrez ensuite l'envoyer via
+    le formulaire ci dessous.</p>
+    <p><a href="{{emptyFormUrl}}">formulaire-autorisation-{{year}}.pdf</a></p>
+    <h3>Envoyer le formulaire signé</h3>
+    <p *ngIf="this.application.parentalAllowance"><b>Vous avez bien envoyé le formulaire ! </b>Cliquez <a href="{{formUrl}}">ici</a> pour voir ce que vous nous
+      avez envoyé. Vous pouvez quand même renvoyer le formulaire si vous avez fait une erreur.</p>
+    <input type="file" ng2FileSelect [uploader]="allowanceUploader">
+    <div class="progress" *ngIf="allowanceUploader.queue[0]">
+      <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{ 'width': allowanceUploader.queue[0].progress + '%' }"></div>
+    </div>
+  </div>
+</div>

@@ -13,6 +13,7 @@ import {ApplicationContentModule} from "./components/applications/application-co
 import {ApplyModule} from "./components/apply/apply.module";
 import {ViewModule} from "./components/view/view.module";
 import {AdminModule} from "./components/admin/admin.module";
+import {StaffModule} from "./components/staff/staff.module";
 
 @NgModule({
   declarations: [
@@ -29,6 +30,7 @@ import {AdminModule} from "./components/admin/admin.module";
     ApplyModule,
     ViewModule,
     AdminModule,
+    StaffModule,
 
     AppRoutingModule
   ],

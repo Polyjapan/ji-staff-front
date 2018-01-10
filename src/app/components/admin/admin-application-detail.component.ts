@@ -5,6 +5,7 @@ import {BackendService, Application, Comment} from "../../services/backend.servi
 import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {ApplicationsService} from "./applications.service";
 import {getState, getStateFancy, getStateLabel} from "../../utils/statelabels";
+import {environment} from "../../../environments/environment";
 
 @Component({
   selector: 'app-admin-applications-detail',
@@ -50,6 +51,15 @@ import {getState, getStateFancy, getStateLabel} from "../../utils/statelabels";
           <b>{{comment.authorName}} le {{dateOfComment(comment)}} : </b>{{comment.comment}}
         </li>
       </ul>
+    </div>
+
+    <div class="well" *ngIf="application && (application.parentalAllowance || application.picture)">
+      <h2 *ngIf="application.picture">Image utilisateur :</h2>
+      <img *ngIf="application.picture" src="{{pictureUrl}}">
+      <a *ngIf="application.picture" href="{{pictureUrl}}">Lien direct : {{pictureUrl}}</a>
+
+      <h2 *ngIf="application.parentalAllowance">Formulaire d'autorisation parentale :</h2>
+      <a *ngIf="application.parentalAllowance" href="{{formUrl}}">Lien : {{formUrl}}</a>
     </div>
 
     <app-application-content *ngIf="edition && application" [edition]="edition" [editable]="true"
@@ -111,6 +121,14 @@ export class AdminApplicationDetailComponent extends AbstractEditionComponent im
     return getStateFancy(this.application);
   }
 
+  get pictureUrl(): string {
+    return environment.uploads + this.application.picture;
+  }
+
+  get formUrl(): string {
+    return environment.uploads + this.application.parentalAllowance;
+  }
+
   get date(): string {
     const date = new Date(this.application.validationDate);
     return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " à " +
@@ -128,7 +146,7 @@ export class AdminApplicationDetailComponent extends AbstractEditionComponent im
     btn.disabled = true;
     this.backend.addComment(this.year, this.selected, val)
       .then(success => {
-        console.log(success)
+        console.log(success);
         this.application.comments.unshift(success.json()["comment"]);
         field.value = "";
         btn.disabled = false;

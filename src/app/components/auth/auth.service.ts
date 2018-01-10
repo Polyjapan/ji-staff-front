@@ -56,6 +56,10 @@ export class AuthService {
     localStorage.setItem('id_token', authResult.idToken);
   }
 
+  public getRawToken() {
+    return localStorage.getItem("id_token");
+  }
+
   public logout(): void {
     // Remove tokens and expiry time from localStorage
     localStorage.removeItem('id_token');

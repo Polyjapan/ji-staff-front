@@ -12,6 +12,7 @@ import {AdminYearComponent} from "./admin-year.component";
 import {AdminApplicationDetailComponent} from "./admin-application-detail.component";
 import {ApplicationsService} from "./applications.service";
 import {AdminGuardService} from "./admin-guard.service";
+import {FileUploadModule} from "ng2-file-upload";
 
 @NgModule({
   declarations: [
@@ -27,7 +28,8 @@ import {AdminGuardService} from "./admin-guard.service";
     ReactiveFormsModule,
     ApplicationContentModule,
     AdminRoutingModule,
-    PipesModule
+    PipesModule,
+    FileUploadModule
   ],
   providers: [
     ApplicationsService,
