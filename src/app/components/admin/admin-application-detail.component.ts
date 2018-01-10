@@ -55,7 +55,7 @@ import {environment} from "../../../environments/environment";
 
     <div class="well" *ngIf="application && (application.parentalAllowance || application.picture)">
       <h2 *ngIf="application.picture">Image utilisateur :</h2>
-      <img *ngIf="application.picture" src="{{pictureUrl}}">
+      <img *ngIf="application.picture" src="{{pictureUrl}}" width="100%">
       <a *ngIf="application.picture" href="{{pictureUrl}}">Lien direct : {{pictureUrl}}</a>
 
       <h2 *ngIf="application.parentalAllowance">Formulaire d'autorisation parentale :</h2>
