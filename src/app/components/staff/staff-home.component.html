@@ -33,17 +33,31 @@
   </div>
 
   <div *ngIf="isMinor()">
-    <h2>Autorisation Parentale</h2>
-    <p>Vous êtes mineur au moment de JapanImpact, aussi nous avons besoin de votre autorisation parentale.</p>
-    <p>Merci de télécharger le document suivant et de le faire signer par vos parents. Vous devrez ensuite l'envoyer via
-    le formulaire ci dessous.</p>
-    <p><a href="{{emptyFormUrl}}">formulaire-autorisation-{{year}}.pdf</a></p>
-    <h3>Envoyer le formulaire signé</h3>
-    <p *ngIf="this.application.parentalAllowance"><b>Vous avez bien envoyé le formulaire ! </b>Cliquez <a href="{{formUrl}}">ici</a> pour voir ce que vous nous
-      avez envoyé. Vous pouvez quand même renvoyer le formulaire si vous avez fait une erreur.</p>
-    <input type="file" ng2FileSelect [uploader]="allowanceUploader">
-    <div class="progress" *ngIf="allowanceUploader.queue[0]">
-      <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{ 'width': allowanceUploader.queue[0].progress + '%' }"></div>
+    <h2>Autorisation Parentale <span [class]="parentalAllowanceClasses">{{parentalAllowanceLabel}}</span> </h2>
+
+
+    <div *ngIf="application.parentalAllowanceAccepted === true">
+      <p>Votre autorisation a été acceptée ! Rien de plus a faire :)</p>
     </div>
+
+    <p *ngIf="application.parentalAllowanceAccepted === false && application.parentalAllowanceRefused"><b>Votre
+    formulaire a été refusé. Motif :</b> {{application.parentalAllowanceRefused}}</p>
+
+    <div *ngIf="!application.parentalAllowanceAccepted">
+      <p>Vous êtes mineur au moment de JapanImpact, aussi nous avons besoin de votre autorisation parentale.</p>
+
+      <p>Merci de télécharger le document suivant et de le faire signer par vos parents. Vous devrez ensuite l'envoyer via
+        le formulaire ci dessous. <a href="{{emptyFormUrl}}">[formulaire-autorisation-{{year}}.pdf]</a></p>
+
+      <h3>Envoyer le formulaire signé</h3>
+      <p *ngIf="this.application.parentalAllowance"><b>Vous avez bien envoyé le formulaire ! </b>Cliquez <a href="{{formUrl}}">ici</a> pour voir ce que vous nous
+        avez envoyé. Vous pouvez quand même renvoyer le formulaire si vous avez fait une erreur.</p>
+      <input type="file" ng2FileSelect [uploader]="allowanceUploader">
+      <div class="progress" *ngIf="allowanceUploader.queue[0]">
+        <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{ 'width': allowanceUploader.queue[0].progress + '%' }"></div>
+      </div>
+    </div>
+
+
   </div>
 </div>

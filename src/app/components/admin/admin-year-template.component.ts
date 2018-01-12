@@ -16,6 +16,7 @@ import {ActivatedRoute, ParamMap} from "@angular/router";
     <div class="well" *ngIf="edition">
       <h2>Edition {{year}}</h2>
       <ul class="nav nav-pills">
+        <li role="presentation" class="disabled"><a href="#">Voir les candidatures :</a></li>
         <li role="presentation" [class.active]="selected === 'waiting'"><a routerLink="applications/waiting">En
           attente</a></li>
         <li role="presentation" [class.active]="selected === 'refused'"><a

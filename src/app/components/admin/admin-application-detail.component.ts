@@ -58,8 +58,15 @@ import {environment} from "../../../environments/environment";
       <img *ngIf="application.picture" src="{{pictureUrl}}" width="100%">
       <a *ngIf="application.picture" href="{{pictureUrl}}">Lien direct : {{pictureUrl}}</a>
 
-      <h2 *ngIf="application.parentalAllowance">Formulaire d'autorisation parentale :</h2>
-      <a *ngIf="application.parentalAllowance" href="{{formUrl}}">Lien : {{formUrl}}</a>
+      <h2 *ngIf="application.parentalAllowance">Autorisation parentale :
+        <span [class]="parentalAllowanceClasses">{{parentalAllowanceLabel}}</span></h2>
+
+      <p>Lien : <a *ngIf="application.parentalAllowance" href="{{formUrl}}">{{formUrl}}</a></p>
+      <p *ngIf="!application.parentalAllowanceAccepted">
+        <a class="btn btn-success" (click)="acceptAllowance()">Accepter</a>
+        <a class="btn btn-danger" (click)="refuseAllowance()">Refuser</a>
+      </p>
+      <p *ngIf="application.parentalAllowanceAccepted === false">Refusée pour le motif : {{application.parentalAllowanceRefused}}</p>
     </div>
 
     <app-application-content *ngIf="edition && application" [edition]="edition" [editable]="true"
@@ -121,14 +128,6 @@ export class AdminApplicationDetailComponent extends AbstractEditionComponent im
     return getStateFancy(this.application);
   }
 
-  get pictureUrl(): string {
-    return environment.uploads + this.application.picture;
-  }
-
-  get formUrl(): string {
-    return environment.uploads + this.application.parentalAllowance;
-  }
-
   get date(): string {
     const date = new Date(this.application.validationDate);
     return date.getDate() + "/" + (date.getMonth() + 1) + "/" + date.getFullYear() + " à " +
@@ -160,5 +159,14 @@ export class AdminApplicationDetailComponent extends AbstractEditionComponent im
           this.error = "Erreur inconnue";
         }
       });
+  }
+
+  acceptAllowance() {
+    this.backend.acceptAuthorisation(this.year, this.application.userId, true).then(u => this.loadApplication());
+  }
+
+  refuseAllowance() {
+    const reason = prompt("Donnez un motif de refus :");
+    this.backend.acceptAuthorisation(this.year, this.application.userId, false, reason).then(u => this.loadApplication());
   }
 }

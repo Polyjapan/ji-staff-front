@@ -6,6 +6,7 @@ import {FormService, LoadedForm} from "./services/form.service";
 import {Response} from "@angular/http";
 import {isMinor} from "./utils/dateutils";
 import {reject} from "q";
+import {environment} from "../environments/environment";
 
 export abstract class AbstractEditionComponent implements OnInit {
   edition: LoadedForm = null;
@@ -77,9 +78,7 @@ export abstract class AbstractEditionComponent implements OnInit {
       .then(
         u => {
           if (this.requestApplication) {
-            return this.backend.getOwnApplication(this.edition.edition.year)
-            // Here we do a promise inside the promise as we want to handle application load errors separately
-              .then(application => this.application = application, ignored => null);
+            return this.loadApplication();
           }
           return null;
         })
@@ -88,6 +87,49 @@ export abstract class AbstractEditionComponent implements OnInit {
         this.loading = false;
       })
       .catch(err => this.catchError(err));
+  }
+
+  loadApplication(): Promise<Application> {
+    return this.backend.getOwnApplication(this.edition.edition.year)
+    // Here we do a promise inside the promise as we want to handle application load errors separately
+      .then(application => this.application = application, ignored => null);
+  }
+
+  get parentalAllowanceClasses(): string {
+    if (this.application.parentalAllowanceAccepted === true) {
+      return "label label-success";
+    } else if (this.application.parentalAllowanceAccepted === false) {
+      return "label label-danger";
+    } else {
+      return "label label-warning";
+    }
+  }
+
+  get parentalAllowanceLabel(): string {
+    if (this.application.parentalAllowanceAccepted === true) {
+      return "Vérifiée et acceptée";
+    } else if (this.application.parentalAllowanceAccepted === false) {
+      return "Refusée";
+    } else {
+      return "En attente de vérification";
+    }
+  }
+
+  get pictureUrl(): string {
+    return environment.uploads + this.application.picture;
+  }
+
+  get formUrl(): string {
+    return AbstractEditionComponent.formUrl(this.application);
+  }
+
+  static formUrl(application: Application): string {
+    return environment.uploads + application.parentalAllowance;
+  }
+
+  isMinor(): boolean {
+    const birthdate = this.application.content["birthdate"] as string;
+    return isMinor(birthdate, this.edition.edition);
   }
 
 }

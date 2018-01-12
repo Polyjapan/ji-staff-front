@@ -103,6 +103,12 @@ export class BackendService {
     this.authHttp.post(this._applicationsUrl + "/" + year + "/grants", {}).toPromise();
   }
 
+  acceptAuthorisation(year: string, userId: string, accepted: boolean, reason?: string): Promise<Response> {
+    return this.authHttp.put(this._applicationsUrl + "/" + year + "/parentalAuthorization/accepted", {
+      userId: userId, status: accepted, reason: reason
+    }).toPromise();
+  }
+
   uploadPicture(year: string): FileUploader {
     return new FileUploader({
       autoUpload: true,
@@ -176,6 +182,8 @@ export class Application {
   content: Map<string, object>;
   picture?: string;
   parentalAllowance?: string;
+  parentalAllowanceAccepted?: boolean;
+  parentalAllowanceRefused?: string;
 }
 
 export class Comment {

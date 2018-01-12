@@ -20,6 +20,8 @@ import {FileUploader, ParsedResponseHeaders} from "ng2-file-upload";
         <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{ 'width': uploader.queue[0].progress + '%' }"></div>
       </div>
     </div>
+    
+    <app-admin-applications-authorizations-template [year]="year"></app-admin-applications-authorizations-template>
   `
 })
 export class AdminYearComponent implements OnInit {

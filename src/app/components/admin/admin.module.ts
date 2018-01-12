@@ -1,7 +1,7 @@
 import {NgModule} from '@angular/core';
 import {AdminRoutingModule} from "./admin-routing.module";
 import {BrowserModule} from "@angular/platform-browser";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {ApplicationContentModule} from "../applications/application-content.module";
 import {PipesModule} from "../../pipes/pipes.module";
 import {AdminHomeComponent} from "./admin-home.component";
@@ -13,6 +13,7 @@ import {AdminApplicationDetailComponent} from "./admin-application-detail.compon
 import {ApplicationsService} from "./applications.service";
 import {AdminGuardService} from "./admin-guard.service";
 import {FileUploadModule} from "ng2-file-upload";
+import {AdminParentalAuthorizationsComponent} from "./admin-parental-authorizations.component";
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import {FileUploadModule} from "ng2-file-upload";
     AdminYearTemplateComponent,
     AdminApplicationsComponent,
     AdminYearComponent,
-    AdminApplicationDetailComponent
+    AdminApplicationDetailComponent,
+    AdminParentalAuthorizationsComponent
   ],
   imports: [
     BrowserModule,
@@ -29,7 +31,8 @@ import {FileUploadModule} from "ng2-file-upload";
     ApplicationContentModule,
     AdminRoutingModule,
     PipesModule,
-    FileUploadModule
+    FileUploadModule,
+    FormsModule
   ],
   providers: [
     ApplicationsService,
