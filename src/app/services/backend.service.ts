@@ -6,6 +6,7 @@ import {environment} from '../../environments/environment';
 import {AuthService} from "../components/auth/auth.service";
 import {FileUploader} from "ng2-file-upload";
 import {FileLikeObject} from "ng2-file-upload/file-upload/file-like-object.class";
+import {HttpResponse} from "@angular/common/http";
 
 
 @Injectable()
@@ -97,6 +98,22 @@ export class BackendService {
         {
           headers: new Headers({'Content-Type': 'application/json'})
         }).toPromise();
+  }
+
+  adminCreateEmptyApplication(year: string): Promise<Response> {
+    return this.authHttp
+      .post(this._applicationsUrl + "/" + year + "/unclaimed", {}).toPromise();
+  }
+
+  claimEmptyApplication(year: string, code: string): Promise<Response> {
+    return this.authHttp
+      .post(this._applicationsUrl + "/" + year + "/claim/" + code, {}).toPromise();
+  }
+
+  adminCreateEmptyApplicationGetUrl(year: string): Promise<string> {
+    return this.adminCreateEmptyApplication(year).then(resp => {
+      return (resp.json() as Application).userId;
+    });
   }
 
   refreshAccessRights(year: string) {

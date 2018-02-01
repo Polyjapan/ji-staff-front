@@ -6,11 +6,13 @@ import {ApplyConfirmComponent} from "./apply-confirm.component";
 import {ApplicationContentModule} from "../applications/application-content.module";
 import {FormsModule} from "../forms/forms.module";
 import {ReactiveFormsModule} from "@angular/forms";
+import {ApplyClaimComponent} from "./apply-claim.component";
 
 @NgModule({
   declarations: [
     ApplyComponent,
-    ApplyConfirmComponent
+    ApplyConfirmComponent,
+    ApplyClaimComponent
   ],
   imports: [
     BrowserModule,

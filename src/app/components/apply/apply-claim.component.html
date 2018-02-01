@@ -1,0 +1,19 @@
+
+<div *ngIf="error">
+  <div class="alert alert-danger" role="alert">
+    <b>Une erreur s'est produite : </b>
+    <p [innerHtml]="error"></p>
+  </div>
+</div>
+
+<div *ngIf="!loading && !error">
+  <div class="jumbotron">
+    <h1>Super !</h1>
+    <p>Votre candidature a été mise à jour ! Déconnectez vous puis reconnectez vous pour pouvoir accéder à l'espace staff.</p>
+  </div>
+</div>
+<div *ngIf="!error && loading">
+  <div class="well">
+    <h2>Validation de la candidature en cours... Merci de patienter quelques instants</h2><br/>
+  </div>
+</div>

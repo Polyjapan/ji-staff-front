@@ -23,6 +23,14 @@ import {DomSanitizer, SafeUrl} from "@angular/platform-browser";
         <button class="btn btn-primary" (click)="forceRefresh()"><b class="glyphicon glyphicon-refresh"></b></button>
         <a class="btn btn-primary" [href]="csvUrl" [download]="fileName"><b class="glyphicon glyphicon-download-alt"></b></a>
       </h2>
+
+      <button (click)="createAccepted()" [disabled]="creating" *ngIf="selected === 'accepted'"
+              class="btn btn-success">Créer une candidature acceptée</button>
+      <br/><br/>
+            
+      <pre class="code" *ngIf="selected === 'accepted' && createdLinks.length > 0"><ng-container *ngFor="let crea of createdLinks.reverse()">{{crea}}
+</ng-container></pre>
+
       <table class="table table-bordered">
         <thead>
         <tr>
@@ -61,8 +69,11 @@ export class AdminApplicationsComponent extends AbstractEditionComponent impleme
   selected: string;
   applications: SortedArray<Application>;
   csvUrl: SafeUrl;
+  createdLinks: string[] = [];
+  creating: boolean = false;
 
-  constructor(forms: FormService, backend: BackendService, public applicationsService: ApplicationsService, route: ActivatedRoute, private sanitizer: DomSanitizer) {
+  constructor(forms: FormService, backend: BackendService, public applicationsService: ApplicationsService,
+              route: ActivatedRoute, private sanitizer: DomSanitizer) {
     super(forms, backend, route, true, false);
   }
 
@@ -180,5 +191,21 @@ export class AdminApplicationsComponent extends AbstractEditionComponent impleme
           this.applications.remove(application);
         }})
       .catch(err => this.catchError(err));
+  }
+
+  createAccepted() {
+    if (this.creating === true) {
+      return;
+    }
+
+    this.creating = true;
+    this.backend.adminCreateEmptyApplicationGetUrl(this.year).then(name => {
+      const url = "https://staff.japan-impact.ch/apply/" + this.year + "/claim/" + name;
+      this.createdLinks.push(url);
+      this.creating = false;
+    }).catch(err => {
+      this.createdLinks.push("Erreur lors de la génération !");
+      this.creating = false;
+    });
   }
 }

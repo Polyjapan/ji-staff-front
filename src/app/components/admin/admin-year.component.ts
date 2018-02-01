@@ -12,7 +12,7 @@ import {FileUploader, ParsedResponseHeaders} from "ng2-file-upload";
     <div class="well">
       <h3>Formulaire d'autorisation parentale</h3>
       <p>Version actuelle (<b>peut ne pas exister !</b>) : <a href="{{emptyFormUrl}}">{{emptyFormUrl}}</a></p>
-      
+
       <h4>Mettre à jour le formulaire</h4>
       <p *ngIf="updated">Formulaire mis à jour !</p>
       <input *ngIf="uploader" type="file" ng2FileSelect [uploader]="uploader">
@@ -20,7 +20,7 @@ import {FileUploader, ParsedResponseHeaders} from "ng2-file-upload";
         <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{ 'width': uploader.queue[0].progress + '%' }"></div>
       </div>
     </div>
-    
+
     <app-admin-applications-authorizations-template [year]="year"></app-admin-applications-authorizations-template>
   `
 })
