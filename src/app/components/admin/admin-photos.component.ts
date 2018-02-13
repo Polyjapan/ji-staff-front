@@ -47,6 +47,7 @@ export class AdminPhotosComponent implements OnInit {
   @Input() year: string;
   edition: Edition;
   private _applications: SortedArray<Application>;
+  applications: SortedArray<Application>;
 
   csvUrl: SafeUrl;
 
@@ -54,10 +55,6 @@ export class AdminPhotosComponent implements OnInit {
   }
 
 
-
-  get applications() {
-    return this._applications ? this._applications.filter(app => isNullOrUndefined(app.picture)) : [];
-  }
 
   forceRefresh() {
     this._applications = null;
@@ -71,10 +68,11 @@ export class AdminPhotosComponent implements OnInit {
     return this.applicationsService.getByState(this.year, "accepted", force).then(rep => {
       this._applications = rep;
       this._applications.onChange(apps => {
+        this.applications = apps.filter(app => isNullOrUndefined(app.picture))
         let csv = "Nom,Prenom,Mail\n";
 
         for (let i = 0; i < this.applications.length; ++i) {
-          const application = this.applications[i];
+          const application = this.applications.get(i);
           csv += application.content["lastname"] + "," + application.content["firstname"] + "," + application.mail + "\n";
         }
 
