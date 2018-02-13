@@ -73,8 +73,8 @@ export class AdminPhotosComponent implements OnInit {
       this._applications.onChange(apps => {
         let csv = "Nom,Prenom,Mail\n";
 
-        for (let i = 0; i < this._applications.length; ++i) {
-          const application = this._applications.get(i)
+        for (let i = 0; i < this.applications.length; ++i) {
+          const application = this.applications[i];
           csv += application.content["lastname"] + "," + application.content["firstname"] + "," + application.mail + "\n";
         }
 
