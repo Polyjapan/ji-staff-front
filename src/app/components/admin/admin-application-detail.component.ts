@@ -6,6 +6,8 @@ import {ActivatedRoute, ParamMap, Router} from "@angular/router";
 import {ApplicationsService} from "./applications.service";
 import {getState, getStateFancy, getStateLabel} from "../../utils/statelabels";
 import {environment} from "../../../environments/environment";
+import {FileItem} from "ng2-file-upload/file-upload/file-item.class";
+import {FileUploader, ParsedResponseHeaders} from "ng2-file-upload";
 
 @Component({
   selector: 'app-admin-applications-detail',
@@ -53,16 +55,22 @@ import {environment} from "../../../environments/environment";
       </ul>
     </div>
 
-    <div class="well" *ngIf="application && (application.parentalAllowance || application.picture)">
+    <div class="well" *ngIf="application">
       <h2 *ngIf="application.picture">Image utilisateur :</h2>
       <img *ngIf="application.picture" src="{{pictureUrl}}" width="100%">
       <a *ngIf="application.picture" href="{{pictureUrl}}">Lien direct : {{pictureUrl}}</a>
 
+      <h4>Uploader une image</h4>
+      <input type="file" ng2FileSelect [uploader]="pictureUploader">
+      <div class="progress" *ngIf="pictureUploader.queue[0]">
+        <div class="progress-bar progress-bar-striped" role="progressbar" [ngStyle]="{ 'width': pictureUploader.queue[0].progress + '%' }"></div>
+      </div>
+      
       <h2 *ngIf="application.parentalAllowance">Autorisation parentale :
         <span [class]="parentalAllowanceClasses">{{parentalAllowanceLabel}}</span></h2>
 
-      <p>Lien : <a *ngIf="application.parentalAllowance" href="{{formUrl}}">{{formUrl}}</a></p>
-      <p *ngIf="!application.parentalAllowanceAccepted">
+      <p *ngIf="application.parentalAllowance" >Lien : <a href="{{formUrl}}">{{formUrl}}</a></p>
+      <p *ngIf="application.parentalAllowance && !application.parentalAllowanceAccepted">
         <a class="btn btn-success" (click)="acceptAllowance()">Accepter</a>
         <a class="btn btn-danger" (click)="refuseAllowance()">Refuser</a>
       </p>
@@ -80,11 +88,19 @@ import {environment} from "../../../environments/environment";
   `
 })
 export class AdminApplicationDetailComponent extends AbstractEditionComponent implements OnInit {
-
+  pictureUploader: FileUploader;
   selected: string;
 
   constructor(forms: FormService, backend: BackendService, public applicationsService: ApplicationsService, route: ActivatedRoute, public router: Router) {
     super(forms, backend, route, true, false);
+  }
+
+  private setupUploader() {
+    this.pictureUploader = this.backend.uploadPicture(this.year, this.selected);
+    const self = this;
+    this.pictureUploader.onCompleteItem = function (item: FileItem, response: string, status: number, headers: ParsedResponseHeaders) {
+      return self.completeInit(null);
+    };
   }
 
   accept() {
@@ -104,6 +120,7 @@ export class AdminApplicationDetailComponent extends AbstractEditionComponent im
   completeInit(params: ParamMap): Promise<void> {
     return this.backend.getApplication(this.year, this.selected).then(rep => {
       this.application = rep;
+      this.setupUploader();
     });
   }
 

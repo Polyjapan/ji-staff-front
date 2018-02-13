@@ -126,12 +126,13 @@ export class BackendService {
     }).toPromise();
   }
 
-  uploadPicture(year: string): FileUploader {
+  uploadPicture(year: string, userId?: string): FileUploader {
     return new FileUploader({
       autoUpload: true,
       removeAfterUpload: true,
       queueLimit: 1,
-      url: this._applicationsUrl + "/" + year + "/picture",
+      url:
+        this._applicationsUrl + "/" + year + "/picture" + (userId ? ("/" + userId) : ""),
       method: 'PUT',
       authToken: "Bearer " + this.authService.getRawToken(),
       disableMultipart: true,
