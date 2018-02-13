@@ -11,7 +11,8 @@ import {ReactiveFormsModule} from "@angular/forms";
     SingleFieldFormComponent
   ],
   exports: [
-    ApplicationContentComponent
+    ApplicationContentComponent,
+    SingleFieldFormComponent
   ],
   imports: [
     FormsModule,

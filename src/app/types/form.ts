@@ -6,6 +6,8 @@ class FormField {
   order: number;
   additionalData: object;
   validators: BasicValidator[];
+  topLevel?: boolean = false;
+  controlType?: string;
 }
 
 class BasicValidator {

@@ -2,7 +2,7 @@
 
   <button class="btn btn-primary btn-xs" *ngIf="editable" (click)="openEdit()"><b class="glyphicon glyphicon-pencil"></b></button>
   <b>{{field.label}}
-  </b> : {{getValue(field.key)}}
+  </b> : {{fieldValue}}
 </ng-container>
 <ng-container *ngIf="editing && editable">
   <div *ngIf="error">

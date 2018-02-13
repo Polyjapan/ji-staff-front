@@ -92,7 +92,7 @@ export class BackendService {
         }).toPromise();
   }
 
-  adminUpdateApplication(year: string, page: number, userId: string, content: object): Promise<Response> {
+  adminUpdateApplication(year: string, page: string | number, userId: string, content: object): Promise<Response> {
     return this.authHttp
       .put(this._applicationsUrl + "/" + year + "/" + userId + "/" + page, content,
         {

@@ -22,7 +22,13 @@ import {FileUploader, ParsedResponseHeaders} from "ng2-file-upload";
     <div class="well" *ngIf="application">
       <p>Cette candidature est actuellement <b class="label {{stateLabel}}">{{stateContent}}</b></p>
       <p *ngIf="application.validationDate">Validée le <b>{{date}}</b></p>
-      <p *ngIf="application.mail">Mail : <code>{{application.mail}}</code></p>
+      <app-application-single-field-form
+        [edition] = "edition"
+        [editable] = "true"
+        [application] = "application"
+        [page] = "mail"
+        [field] = "emailFormField"
+      ></app-application-single-field-form>
       <p *ngIf="application.statusChangedBy">Dernier changement d'état par <b>{{application.statusChangedBy[1]}}</b>
         (<code>{{application.statusChangedBy[0]}}</code>)</p>
       <p>
@@ -185,5 +191,19 @@ export class AdminApplicationDetailComponent extends AbstractEditionComponent im
   refuseAllowance() {
     const reason = prompt("Donnez un motif de refus :");
     this.backend.acceptAuthorisation(this.year, this.application.userId, false, reason).then(u => this.loadApplication());
+  }
+
+  get emailFormField(): FormField {
+    return {
+      key: "mail",
+      label: "EMail",
+      helpText: "Email du staff",
+      required: true,
+      order: 0,
+      additionalData: {},
+      validators: [],
+      topLevel: true,
+      controlType: "email"
+    };
   }
 }
