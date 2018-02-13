@@ -22,6 +22,7 @@ import {FileUploader, ParsedResponseHeaders} from "ng2-file-upload";
     </div>
 
     <app-admin-applications-authorizations-template [year]="year"></app-admin-applications-authorizations-template>
+    <app-admin-photos [year]="year"></app-admin-photos>
   `
 })
 export class AdminYearComponent implements OnInit {

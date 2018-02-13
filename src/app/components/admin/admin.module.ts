@@ -14,6 +14,7 @@ import {ApplicationsService} from "./applications.service";
 import {AdminGuardService} from "./admin-guard.service";
 import {FileUploadModule} from "ng2-file-upload";
 import {AdminParentalAuthorizationsComponent} from "./admin-parental-authorizations.component";
+import {AdminPhotosComponent} from "./admin-photos.component";
 
 @NgModule({
   declarations: [
@@ -23,7 +24,8 @@ import {AdminParentalAuthorizationsComponent} from "./admin-parental-authorizati
     AdminApplicationsComponent,
     AdminYearComponent,
     AdminApplicationDetailComponent,
-    AdminParentalAuthorizationsComponent
+    AdminParentalAuthorizationsComponent,
+    AdminPhotosComponent
   ],
   imports: [
     BrowserModule,
